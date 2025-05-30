@@ -1,17 +1,38 @@
+'use client'
+
 import HeaderNav from "@/components/headerNav";
 import ScrollBar from "@/components/scrollBar";
 import ScrollFood from "@/components/scrollFood";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect,useState } from "react";
+import { getAllMenu } from "../api/menu.api"
+
+type MenuItem = {
+    name: string;
+    imgsrc: string;
+    description: string;
+    // add other fields if needed
+};
 
 export default function Home() {
-    const items = [
-        { name: "Gà Rán", imageSrc: "/images/Ga.png", description: "Thức ăn nhanh" },
-        { name: "Burger", imageSrc: "/images/burger.jpg", description: "Thức ăn nhanh" },
-        { name: "Bún", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
-        { name: "Mì", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
-        { name: "Burger", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
-    ];
+    const [menu, setMenu] = useState<MenuItem[]>([]);
+    useEffect(() => {
+        getAllMenu()
+            .then((response) => {
+                setMenu(response)
+            })
+            .catch((error) => {
+              console.log(error)  
+            })
+    },[])
+
+    // const items = [
+    //     { name: "Gà Rán", imageSrc: "/images/Ga.png", description: "Thức ăn nhanh" },
+    //     { name: "Burger", imageSrc: "/images/burger.jpg", description: "Thức ăn nhanh" },
+    //     { name: "Bún", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
+    //     { name: "Mì", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
+    //     { name: "Burger", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
+    // ];
 
     const banneritems = [
         {
@@ -83,16 +104,17 @@ export default function Home() {
 
         ]
     }
+
     return (
         <>
             <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-3 pt-3 pl-8 pr-8  z-40">
                     <div className="flex flex-col fixed  bg-white w-64 rounded-2xl  pl-3 pt-2  pb-5 gap-3  ">
                         <span>Thực đơn </span>
-                        {items.map((item, index) => (
+                        {menu.map((item, index) => (
                             <div key={index} className="flex flex-col gap-3 cursor-pointer hover:bg-slate-100">
                                 <div className="flex flex-row items-center gap-1">
-                                    <Image src={item.imageSrc} width={30} height={30} alt={item.description} />
+                                    <Image src={item.imgsrc} width={30} height={30} alt={item.description} />
                                     <span>{item.name}</span>
                                 </div>
                             </div>

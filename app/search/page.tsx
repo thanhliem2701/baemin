@@ -111,7 +111,7 @@ const Page: React.FC = () => {
 
             </div>
             <div className='my-3 flex flex-row'>
-                asdasd
+        
             </div>
             <ResultFood items={items} />
         </>

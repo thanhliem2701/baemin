@@ -24,9 +24,7 @@ export default function RootLayout({
       <HeaderNav/>
       <AntdRegistry>{children}
 
-
       </AntdRegistry>
-       
       </body>
       
     </html>
