@@ -4,12 +4,16 @@ import axios from "axios";
 
 
 const login = async (username: string, password: string) => {
-    const response = await axios.post(`${BASE_URL}/login`, {
-        username,
-        password
-    })
-    console.log(response.data)
-    return response.data
+    try {
+        const response = await axios.post(`${BASE_URL}/login`, {
+            username,
+            password
+        })
+        return response.data
+    }
+    catch (error) {
+        return { error }
+    }
 }
 
 export { login }

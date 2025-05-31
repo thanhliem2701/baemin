@@ -33,7 +33,6 @@ const Page: React.FC = () => {
             localStorage.setItem('accessToken', token);
             localStorage.setItem('accessRefreshToken', refeshToken);
             setToken(token)
-            console.log("Token : ",token);
 
             message.success('Đăng nhập thành công!');
             router.push('/dashboard');

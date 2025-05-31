@@ -4,8 +4,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ResultFood({ items }: { items: any[] }) {
     const router = useRouter();
-    const handleNavigate = () => {
-       
+    const handleNavigate = () => {  
         router.push('/detailfood');
       
     };
@@ -22,10 +21,10 @@ export default function ResultFood({ items }: { items: any[] }) {
                             <span className='font-bold text-[#252525]'> {item.name} </span>
                         </div>
                         <div className="ml-3 w-full truncate text-sm  h-[30%]" style={{ color: '#959595' }}>
-                            <span>{item.address}</span>
+                            <span>{item.description}</span>
                         </div>
                         <div className=" flex items-center w-full text-sm border-t  border-beamin-50  h-[30%]">
-                            <span className="ml-3 ">{item.kind}</span>
+                            {/* <span className="ml-3 ">{item.kind}</span> */}
                         </div>
                     </div>
                 </div>

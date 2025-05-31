@@ -4,106 +4,68 @@ import HeaderNav from "@/components/headerNav";
 import ScrollBar from "@/components/scrollBar";
 import ScrollFood from "@/components/scrollFood";
 import Image from "next/image";
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllMenu } from "../api/menu.api"
+import { getAllBanner } from "../api/banner.api"
+import { getFoodByPromotionFlag } from "../api/comboFood.api";
 
 type MenuItem = {
     name: string;
     imgsrc: string;
     description: string;
-    // add other fields if needed
+};
+
+type BannerItem = {
+    id: number;
+    name: string;
+    url: string;
+    imgsrc: string;
+};
+type FoodItem = {
+    id: number;
+    menu_id: number;
+    name: string;
+    description: string;
+    price: number;
+    img: string;
+    promotion_flag: number;
+    tag: string;
 };
 
 export default function Home() {
     const [menu, setMenu] = useState<MenuItem[]>([]);
+    const [banner, setBanner] = useState<BannerItem[]>([]);
+    const [food, setFood] = useState<FoodItem[]>([]);
+    const [combo, setCombo] = useState<FoodItem[]>([]);
     useEffect(() => {
+        // get menu to display on left side
         getAllMenu()
             .then((response) => {
                 setMenu(response)
             })
             .catch((error) => {
-              console.log(error)  
+                console.log(error)
             })
-    },[])
-
-    // const items = [
-    //     { name: "Gà Rán", imageSrc: "/images/Ga.png", description: "Thức ăn nhanh" },
-    //     { name: "Burger", imageSrc: "/images/burger.jpg", description: "Thức ăn nhanh" },
-    //     { name: "Bún", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
-    //     { name: "Mì", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
-    //     { name: "Burger", imageSrc: "/images/noddle.png", description: "Thức ăn nhanh" },
-    // ];
-
-    const banneritems = [
-        {
-            id: '1',
-            name: 'anh 1',
-            url: '/images/map1.png',
-        },
-        {
-            id: '2',
-            name: 'anh 2',
-            url: '/images/map2.png',
-        },
-        {
-            id: '3',
-            name: 'anh 32',
-            url: '/images/map3.png',
-        },
-        {
-            id: '3',
-            name: 'anh 32',
-            url: '/images/map4.png',
-        }
-    ]
-    const TodayFood = {
-        title: 'Hôm Nay ăn gì',
-        items: [
-            {
-                id: '1',
-                name: ' Gà Ủ Muối Hoa Tiêu - Food',
-                adrress: '4A Đường Số 71, P. Tân Quy, Quận 7, TP. HCM',
-                img: '/food/ga1.jpg',
-                kind: 'Quan An'
-            },
-            {
-                id: '1',
-                name: ' Gà Ủ Muối Hoa Tiêu - Food',
-                adrress: '4A Đường Số 71, P. Tân Quy, Quận 7, TP. HCM',
-                img: '/food/ga1.jpg',
-                kind: 'Quan An'
-            },
-            {
-                id: '1',
-                name: ' Gà Ủ Muối Hoa Tiêu - Food',
-                adrress: '4A Đường Số 71, P. Tân Quy, Quận 7, TP. HCM',
-                img: '/food/ga1.jpg',
-                kind: 'Quan An'
-            },
-            {
-                id: '1',
-                name: ' Gà Ủ Muối Hoa Tiêu - Food',
-                adrress: '4A Đường Số 71, P. Tân Quy, Quận 7, TP. HCM',
-                img: '/food/ga1.jpg',
-                kind: 'Quan An'
-            },
-            {
-                id: '1',
-                name: ' Gà Ủ Muối Hoa Tiêu - Food',
-                adrress: '4A Đường Số 71, P. Tân Quy, Quận 7, TP. HCM',
-                img: '/food/ga1.jpg',
-                kind: 'Quan An'
-            },
-            {
-                id: '1',
-                name: ' Gà Ủ Muối Hoa Tiêu - Food',
-                adrress: '4A Đường Số 71, P. Tân Quy, Quận 7, TP. HCM',
-                img: '/food/ga1.jpg',
-                kind: 'Quan An'
-            },
-
-        ]
-    }
+        // get all scroll banner
+        getAllBanner()
+            .then((response) => {
+                setBanner(response)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        // get combo and promotion item
+        getFoodByPromotionFlag([0,1])
+            .then((response:FoodItem[]) => {
+                const foodItems = response.filter((item) => item.promotion_flag === 1);
+                const comboItems = response.filter((item) => item.promotion_flag === 0);
+                setFood(foodItems) // promotion_flag: 0 Combo
+                setCombo(comboItems) // promotion_flag: 1 khuyến mãi
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+    }, [])
 
     return (
         <>
@@ -122,9 +84,9 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="col-span-9 w-full  pt-3 pr-8 gap-3 flex flex-col">
-                    <ScrollBar items={banneritems} ></ScrollBar>
-                    <ScrollFood items={TodayFood}></ScrollFood>
-                    <ScrollFood items={TodayFood}></ScrollFood>
+                    <ScrollBar items={banner} ></ScrollBar>
+                    <ScrollFood items={food} title={"Các món đang khuyến mãi hấp dẫn !!!"}></ScrollFood>
+                    <ScrollFood items={combo} title={"Combo nổi bật !!!"}></ScrollFood>
                 </div>
 
             </div>

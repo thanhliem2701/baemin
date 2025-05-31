@@ -1,16 +1,17 @@
 'use client'
-const BASE_URL = "http://localhost:3001/menu"
+const BASE_URL = "http://localhost:3001/banneritems"
 
 import axios from "axios"
 
-const getAllMenu = async () => {
+const getAllBanner = async () => {
     try {
         const response = await axios.get(BASE_URL)
         return response.data
     }
     catch (error) {
-        return { error }
+        return {error}
     }
+ 
 }
 
-export { getAllMenu }
+export { getAllBanner }

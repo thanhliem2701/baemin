@@ -1,103 +1,141 @@
+'use client'
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TypeSelector from './type';
 import AreaSelector from './area';
 import FilterSelector from './filter';
 import ResultFood from './result';
+import { getComboFoodsByName } from "../api/comboFood.api";
+import { useRouter, useSearchParams } from "next/navigation";
+
+type FoodItem = {
+    id: number;
+    menu_id: number;
+    name: string;
+    description: string;
+    price: number;
+    img: string;
+    promotion_flag: number;
+    tag: string
+};
 
 const Page: React.FC = () => {
-    const items=[{
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+    const searchParams = useSearchParams();
+    const name = searchParams?.get('name');
+    const [food, setFood] = useState<FoodItem[]>([]);
+
+    useEffect(() => {
+        try {
+            if (typeof name === 'string' && name.trim() !== '') {
+                getComboFoodsByName(name ?? "")
+                    .then((response) => {
+                        setFood(response)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            }else {
+                alert("vui lòng nhập tên cần tìm kiếm !")
+            }
+
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }, [name])
+
+    const items = [{
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
     {
-        id:'1',
-        name:'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
-        address:'102/12 Cống Quỳnh, Quận 1, TP. HCM',
-        img:'/food/ga1.jpg',
-        kind:'Quán Ăn',
+        id: '1',
+        name: 'Cơm Chiên & Nui Xào Bò - Cống Quỳnh',
+        address: '102/12 Cống Quỳnh, Quận 1, TP. HCM',
+        img: '/food/ga1.jpg',
+        kind: 'Quán Ăn',
     },
-]
+    ]
     return (
         <>
             <div className='w-full flex flex-row justify-between items-center border-b border-solid'>
@@ -111,9 +149,9 @@ const Page: React.FC = () => {
 
             </div>
             <div className='my-3 flex flex-row'>
-        
+
             </div>
-            <ResultFood items={items} />
+            <ResultFood items={food} />
         </>
     )
 }

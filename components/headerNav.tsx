@@ -3,16 +3,18 @@
 import { Button, Select } from "antd";
 import { SearchProps } from "antd/es/input";
 import Search from "antd/es/input/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HomeOutlined, SearchOutlined, SolutionOutlined,ShoppingCartOutlined } from '@ant-design/icons';
 import { useRouter } from "next/navigation";
 
 export default function HeaderNav() {
     const router = useRouter();
+    const [search, setSearch] = useState<string>("")
     const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
-        router.push('/search')
-
+        setSearch(value)
+        router.push(`/search?name=${value}`)
     };
+
     const navigation =()=>{
         router.push('/dashboard')
     }
@@ -30,9 +32,15 @@ export default function HeaderNav() {
                 <Search
                 className="w-1/3"
                     placeholder="input search text"
-                    enterButton="Tìm kiếm"
                     size="large"
+                    value ={search}
+                    onChange = {(e)=>setSearch(e.target.value)}
                     onSearch={onSearch}
+                    enterButton = {
+                        <Button type = "primary" disabled = {search.trim() === ''}>
+                            Tìm Kiếm
+                        </Button>
+                    }
                 />
             </div>
             <div className="flex-none w-1/4  flex flex-row items-center  py-2" >
