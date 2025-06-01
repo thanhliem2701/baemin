@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import { login } from "../api/auth.api"
+import { useSession } from "../context/sessionContext";
 
 const Page: React.FC = () => {
     const router = useRouter();
@@ -13,6 +14,7 @@ const Page: React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState<string>('');
+    const session = useSession();
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -23,16 +25,19 @@ const Page: React.FC = () => {
 
         try {
             setLoading(true);
-
             const response = await login(email, password)
             const token = response?.bearerToken;
             const refeshToken = response?.bearerRefreshToken;
+            const user = response?.user;
+            
             if (!token) {
                 throw new Error('Không nhận được token từ máy chủ');
             }
             localStorage.setItem('accessToken', token);
             localStorage.setItem('accessRefreshToken', refeshToken);
+            localStorage.setItem('user',JSON.stringify(user))
             setToken(token)
+            session?.setUser && session.setUser(user)
 
             message.success('Đăng nhập thành công!');
             router.push('/dashboard');
@@ -44,7 +49,6 @@ const Page: React.FC = () => {
         } finally {
             setLoading(false);
         }
-
     }
 
     return (

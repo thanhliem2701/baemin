@@ -4,10 +4,13 @@ import { Button, Select } from "antd";
 import { SearchProps } from "antd/es/input";
 import Search from "antd/es/input/Search";
 import { useEffect, useState } from "react";
-import { HomeOutlined, SearchOutlined, SolutionOutlined,ShoppingCartOutlined } from '@ant-design/icons';
+import { HomeOutlined, SearchOutlined, SolutionOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useRouter } from "next/navigation";
+import { useSession } from "../app/context/sessionContext";
 
 export default function HeaderNav() {
+    const session = useSession();
+    const user = session?.user;
     const router = useRouter();
     const [search, setSearch] = useState<string>("")
     const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
@@ -15,7 +18,15 @@ export default function HeaderNav() {
         router.push(`/search?name=${value}`)
     };
 
-    const navigation =()=>{
+    const logout = () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("accessRefreshToken");
+        session?.setUser && session.setUser(null)
+        router.push("/login"); // tuỳ chọn: điều hướng về trang login
+    };
+
+    const navigation = () => {
         router.push('/dashboard')
     }
     return (
@@ -30,25 +41,38 @@ export default function HeaderNav() {
             <div className="grow  flex flex-row items-center gap-9	 ">
                 <Select className="ml-10 w-28 	" ></Select>
                 <Search
-                className="w-1/3"
+                    className="w-1/3"
                     placeholder="input search text"
                     size="large"
-                    value ={search}
-                    onChange = {(e)=>setSearch(e.target.value)}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     onSearch={onSearch}
-                    enterButton = {
-                        <Button type = "primary" disabled = {search.trim() === ''}>
+                    enterButton={
+                        <Button type="primary" disabled={search.trim() === ''}>
                             Tìm Kiếm
                         </Button>
                     }
                 />
             </div>
             <div className="flex-none w-1/4  flex flex-row items-center  py-2" >
-            <Button href="/dashboard" className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px',height:'100%' ,color:'rgb(128, 128, 137)' }}  type="text" icon={<HomeOutlined  />}>Trang Chủ</Button>
-            <Button href="/login" className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px',height:'100%' ,color:'rgb(128, 128, 137)' }}  type="text" icon={<SolutionOutlined />}>Tài Khoản</Button>
-            <Button href="/cart" type="text" style={{fontSize: '20px', width:'40px', height:'100%' ,color:'#3AC5C9' }} icon={<ShoppingCartOutlined />} >
-            </Button>
-            <span className="text-xs bg-red-600 relative rounded w-full text-white  bottom-3 right-4 text-center" style={{width:'15px' ,borderRadius:'50px'}}  >1</span>
+                <Button href="/dashboard" className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<HomeOutlined />}>Trang Chủ</Button>
+                {user ? (
+                    <><div className="flex items-center gap-2">
+                        <span className="text-sm text-blue-600 text-[20px] mr-2">{user.first_name}</span>
+                        <Button className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<LogoutOutlined />}
+                            // className="text-red-500"
+                            // type="text"
+                            onClick={logout}
+                            // style={{ fontSize: "14px", height: "100%" }}
+                        >
+                            Logout
+                        </Button>
+                        </div>
+                    </>
+                ) : <Button href="/login" className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<SolutionOutlined />}>Tài Khoản</Button>}
+                <Button href="/cart" type="text" style={{ fontSize: '20px', width: '40px', height: '100%', color: '#3AC5C9' }} icon={<ShoppingCartOutlined />} >
+                </Button>
+                <span className="text-xs bg-red-600 relative rounded w-full text-white  bottom-3 right-4 text-center" style={{ width: '15px', borderRadius: '50px' }}  >1</span>
             </div>
 
         </div>

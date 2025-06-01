@@ -10,6 +10,7 @@ import { getAllMenuByBranchId } from "../api/branchMenu.api";
 import { getComboFoodByMenuId } from "../api/comboFood.api";
 import { useSearchParams } from "next/navigation";
 import { getBranchById } from "../api/branch.api"
+import { useSession } from "../context/sessionContext";
 
 type FoodItem = {
     id: number;
@@ -28,7 +29,6 @@ type Menu = {
     branch_id: number;
     menu_flag: number;
 }
-
 type Branch = {
     id: number;
     name: string;
@@ -50,7 +50,8 @@ export default function Home() {
     const branchParam = useSearchParams()
     const branchId = Number(branchParam?.get('branch_id'));
     const [foods, setFoods] = useState<FoodItem[]>([])
-
+    const session = useSession();
+    const { addToCart } = useSession();
     useEffect(() => {
         const fetchData = async () => {
             if (branchId !== null && !isNaN(branchId)) {
@@ -72,33 +73,6 @@ export default function Home() {
             }
         }
         fetchData();
-        ////////////////////////////
-        // if (branchId !== null && !isNaN(branchId)) {
-        //     // get branch
-        //     getBranchById(branchId)
-        //         .then((response) => {
-        //             setBranch(response)
-        //             // get menu from branch
-        //             return getAllMenuByBranchId(response.id)
-        //                 .then((menuData) => {
-        //                     setMenu(menuData)
-        //                 })
-        //                 .catch(() => {
-        //                     alert("Can not get menu !")
-        //                 })
-        //         })
-        //         .catch(() => {
-        //             alert("Can not get branch or menu!")
-        //         })
-
-        //     getComboFoodByMenuId(isActive, branchId)
-        //         .then((foodData) => {
-        //             setFoods(foodData)
-        //         })
-        //         .catch(() => {
-        //             alert("Can not get combo or food")
-        //         })
-        // }
     }, [branchId, isActive])
 
     const handleMouseDown = (id: number, name: string) => {
@@ -240,30 +214,25 @@ export default function Home() {
                                         <div className="w-[15%] flex justify-center items-center">
                                             <span className="text-[#0288d1] font-bold text-base">{Number(item.price).toLocaleString('en-US')} đ</span>
                                         </div>
-                                        <div className="w-[10%] flex justify-center items-center">
-                                            <div className="h-6 w-6 rounded-md flex justify-center items-center bg-beamin text-white font-bold cursor-pointer hover:brightness-110 " ><PlusOutlined /></div>
+
+                                        <div onClick={() => {
+                                            addToCart({
+                                                id: item.id,
+                                                namefood: item.name,
+                                                description: item.description,
+                                                price: item.price,
+                                                quantity: 1,
+                                                img: item.img, // or another suitable value for icon
+                                                totalprice: item.price * 1, // or another suitable calculation for amount
+                                            })
+                                        }} className="w-[10%] flex justify-center items-center">
+                                            <div className="h-6 w-6 rounded-md flex justify-center items-center bg-beamin text-white font-bold cursor-pointer hover:brightness-110 " >
+                                                <PlusOutlined />
+                                            </div>
                                         </div>
-                                    </div>
 
+                                    </div>
                                 ))}
-                                {/* <div className="flex flex-row ">
-                                    <div className="w-[15%] relative h-16">
-                                        <Image layout="fill" objectFit="cover" src={'/images/Ga.png'} alt="s" ></Image>
-                                    </div>
-                                    <div className="w-[60%] flex flex-col gap-1 px-2">
-                                        <span className="font-bold text-[#464646] ">Mua 2 Tặng 2 Gà Rán </span>
-                                        <span className="text-wrap text-sm text-[#464646] " >Bao gồm: 4 Miếng Gà (Cay/Không Cay), 2 Nước Vừa. Đã bao gồm 2x Tương Cà, 1x Tương Ớt Ngọt, 1x Tương Ớt Tỏi</span>
-                                    </div>
-                                    <div className="w-[15%] flex justify-center items-center">
-                                        <span className="text-[#0288d1] font-bold text-base">118.000đ</span>
-                                    </div>
-                                    <div className="w-[10%] flex justify-center items-center">
-                                        <div className="h-6 w-6 rounded-md flex justify-center items-center bg-beamin text-white font-bold cursor-pointer hover:brightness-110 " ><PlusOutlined /></div>
-                                    </div>
-                                </div> */}
-
-
-
                             </div>
                         </div>
                     </div>

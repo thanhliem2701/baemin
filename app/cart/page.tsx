@@ -1,3 +1,4 @@
+'use client'
 import HeaderNav from "@/components/headerNav";
 import ScrollBar from "@/components/scrollBar";
 import ScrollFood from "@/components/scrollFood";
@@ -6,55 +7,16 @@ import Image from "next/image";
 import React, { useEffect } from "react";
 import DetailsCart from "./detailsCart";
 import { Button } from "antd";
-import { getAllMenu } from "../api/menu.api";
+import { useSession } from "../context/sessionContext";
 
 export default function Home() {
-    const detail: any = [
-        {
-            name: 'Chicken Gang',
-            quandoitac: true,
-            items: [
-                {
-                    namefood: 'Gà rán',
-                    img: '/images/Ga.png',
-                    description: 'Chiên bột',
-                    price: 280000,
-                    quantity: 2,
-                    totalprice: 280000
-                },
-                {
-                    namefood: 'Gà rán',
-                    img: '/images/Ga.png',
-                    description: 'Chiên bột',
-                    price: 280000,
-                    quantity: 2,
-                    totalprice: 280000
-                }
-            ]
-        },
-        {
-            name: 'Chicken Gang',
-            quandoitac: true,
-            items: [
-                {
-                    namefood: 'Gà rán',
-                    img: '/images/Ga.png',
-                    description: 'Chiên bột',
-                    price: 280000,
-                    quantity: 2,
-                    totalprice: 280000
-                },
-                {
-                    namefood: 'Gà rán',
-                    img: '/images/Ga.png',
-                    description: 'Chiên bột',
-                    price: 280000,
-                    quantity: 2,
-                    totalprice: 280000
-                }
-            ]
-        }
-    ]
+    const { cart } = useSession();
+    //const session = useSession();
+
+    const totalQuantity = cart.reduce((sum, i) => sum + i.quantity, 0);
+    const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+    console.log("cart: ",cart)
     return (<>
         <div className="flex flex-row w-full h-20 bg-white ">
             <div className="w-1/2 h-full flex flex-row  items-center gap-3">
@@ -92,7 +54,9 @@ export default function Home() {
                     <span className="text-base font-normal  text-gray-600" >Thao tác</span>
                 </div>
             </div>
-            <DetailsCart Details={detail} />
+
+            <DetailsCart Details={cart} />
+
             <div className=" flex flex-row fixed bottom-0  w-[90.6%]  mr-16  h-16 bg-white items-center  " >
                 <div className="flex flex-row gap-2 w-1/2 h-full items-center ml-10">
                     <div className="cursor-pointer hover:text-red-600 " >Hủy</div>

@@ -1,3 +1,4 @@
+'úe client'
 import { Button } from "antd";
 import { Butterfly_Kids } from "next/font/google";
 import Image from "next/image";
@@ -6,7 +7,7 @@ import React from "react";
 export default function DetailsCart({ Details }: {
     Details: any[]
 }) {
-
+    console.log(" Details: ",Details)
     return (
         <>
         {Details.map((items, index) => (
