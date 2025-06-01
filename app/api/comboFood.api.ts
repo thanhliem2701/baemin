@@ -14,7 +14,7 @@ const getAllFood = async () => {
 }
 
 const getFoodByPromotionFlag = async (flag: number[]) => {
-    try{
+    try {
         const response = await axios.get(`${BASE_URL}/promotion/${flag.toString()}`)
         return response.data
     }
@@ -28,10 +28,29 @@ const getComboFoodsByName = async (name: string) => {
         const response = await axios.get(`${BASE_URL}/name/${name}`)
         return response.data
     }
-    catch(error)
-    {
-        return(error)
+    catch (error) {
+        return (error)
     }
 }
 
-export { getAllFood, getFoodByPromotionFlag, getComboFoodsByName }
+const getComboFoodsById = async (id: number) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/${id}`)
+        return response.data
+    }
+    catch (error) {
+        return (error)
+    }
+}
+
+const getComboFoodByMenuId = async (menuId: number, branchId: number) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/menu/${menuId}/branch/${branchId}`)
+        return response.data
+    }
+    catch (error) {
+        return (error)
+    }
+}
+
+export { getAllFood, getFoodByPromotionFlag, getComboFoodsByName, getComboFoodsById, getComboFoodByMenuId }
