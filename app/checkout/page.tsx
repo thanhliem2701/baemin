@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "../context/sessionContext";
 import React, { useEffect, useState } from "react";
 import { Modal, Button } from "antd";
+import { sendMail } from "../api/sendMail.api";
 export default function Home() {
     const { cart, clearCart, user } = useSession();
     const router = useRouter();
@@ -15,11 +16,25 @@ export default function Home() {
     const [voucherText, setVoucherText] = useState<string>('')
     const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + item.totalprice, 0);
-    const shippingFee = 38000;
+    const shippingFee = 15000;
     const finalTotal = totalPrice + shippingFee - selectedVoucher;
 
 
     const handleNavigate = () => {
+        const orderSummary = {
+            shippingFee,
+            finalTotal,
+            selectedVoucher,
+            voucherText,
+            totalQuantity,
+            totalPrice,
+            userFullName: user.first_name && ' ' && user.last_name,
+            userEmail: user.email,
+        };
+        localStorage.setItem('orderSummary', JSON.stringify(orderSummary));
+
+        //call api send email
+        sendMail(orderSummary)
 
         router.push('/statusorder');
 
