@@ -8,15 +8,15 @@ import React, { useEffect } from "react";
 import DetailsCart from "./detailsCart";
 import { Button } from "antd";
 import { useSession } from "../context/sessionContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
     const { cart } = useSession();
-    //const session = useSession();
-
+    const session = useSession();
+    const router = useRouter();
     const totalQuantity = cart.reduce((sum, i) => sum + i.quantity, 0);
     const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-    console.log("cart: ",cart)
     return (<>
         <div className="flex flex-row w-full h-20 bg-white ">
             <div className="w-1/2 h-full flex flex-row  items-center gap-3">
@@ -68,7 +68,7 @@ export default function Home() {
                     </div>
                     <div className="text-red-600" >₫0 </div>
                     <div>
-                        <Button href="/checkout" style={{ 'background': '#3AC5C9', color: 'white' }} className="bg-beamin text-white w-40 h-10 rounded-md hover:brightness-105" >Thanh toán</Button>
+                        <Button onClick = {() => router.push("/checkout")} style={{ 'background': '#3AC5C9', color: 'white' }} className="bg-beamin text-white w-40 h-10 rounded-md hover:brightness-105" >Thanh toán</Button>
                     </div>
 
 

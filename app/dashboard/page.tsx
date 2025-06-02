@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { getAllMenu } from "../api/menu.api"
 import { getAllBanner } from "../api/banner.api"
 import { getFoodByPromotionFlag } from "../api/comboFood.api";
+import { useSession } from "../context/sessionContext";
 
 type MenuItem = {
     name: string;
@@ -37,6 +38,7 @@ export default function Home() {
     const [banner, setBanner] = useState<BannerItem[]>([]);
     const [food, setFood] = useState<FoodItem[]>([]);
     const [combo, setCombo] = useState<FoodItem[]>([]);
+    const session = useSession();
     useEffect(() => {
         // get menu to display on left side
         getAllMenu()

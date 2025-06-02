@@ -11,6 +11,7 @@ import { getComboFoodByMenuId } from "../api/comboFood.api";
 import { useSearchParams } from "next/navigation";
 import { getBranchById } from "../api/branch.api"
 import { useSession } from "../context/sessionContext";
+import { useRouter } from "next/navigation";
 
 type FoodItem = {
     id: number;
@@ -52,6 +53,7 @@ export default function Home() {
     const [foods, setFoods] = useState<FoodItem[]>([])
     const session = useSession();
     const { addToCart } = useSession();
+    const router = useRouter();
     useEffect(() => {
         const fetchData = async () => {
             if (branchId !== null && !isNaN(branchId)) {
@@ -119,7 +121,7 @@ export default function Home() {
                 </div>
                 <div className=" w-[55%] h-full relative">
                     <div className="absolute top-0 left-0 px-8 py-4">
-                        <span className="text-[13px] text-[#187CAA]"><a href="/dashboard">Home</a>
+                        <span className="text-[13px] text-[#187CAA]"><a onClick={() => router.push("/dashboard")} >Home</a>
                             <DoubleRightOutlined className="text-[10px]" /> <a href="">{branch ? branch.name : ""}</a> </span>
                         <div className="flex flex-row text-[11px] justify-start items-center mt-3">
                             <div className="bg-beamin text-white p-1 mr-2 cursor-pointer tracking-wider flex gap-1">

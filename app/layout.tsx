@@ -23,8 +23,9 @@ export default function RootLayout({
 
       <body className="w-full h-fit">
         <SessionProvider>
-          <HeaderNav />
-          <AntdRegistry>{children}
+          <AntdRegistry>
+            <HeaderNav />
+            {children}
 
           </AntdRegistry>
         </SessionProvider>

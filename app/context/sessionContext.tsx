@@ -58,6 +58,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
+        console.log("Cart loaded from localStorage:", cart);
     }, [cart]);
 
     // Cart logic
@@ -68,11 +69,11 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
                 return prev.map((p) =>
                     p.id === item.id ? { ...p, 
                         quantity: p.quantity + item.quantity,
-                        totalprice: p.quantity*p.price
+                        totalprice: (p.quantity + item.quantity) * p.price
                     } : p
                 );
             }
-            return [...prev, item];
+            return [...prev, { ...item, totalprice: item.quantity * item.price }];
         });
     };
 
@@ -100,3 +101,5 @@ export const useSession = () => {
   }
   return context;
 };
+
+

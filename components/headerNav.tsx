@@ -8,11 +8,14 @@ import { HomeOutlined, SearchOutlined, SolutionOutlined, ShoppingCartOutlined, L
 import { useRouter } from "next/navigation";
 import { useSession } from "../app/context/sessionContext";
 
+
 export default function HeaderNav() {
     const session = useSession();
+    const { cart } = useSession();
     const user = session?.user;
     const router = useRouter();
     const [search, setSearch] = useState<string>("")
+    const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
     const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
         setSearch(value)
         router.push(`/search?name=${value}`)
@@ -55,7 +58,7 @@ export default function HeaderNav() {
                 />
             </div>
             <div className="flex-none w-1/4  flex flex-row items-center  py-2" >
-                <Button href="/dashboard" className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<HomeOutlined />}>Trang Chủ</Button>
+                <Button onClick={() => router.push("/dashboard")} className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<HomeOutlined />}>Trang Chủ</Button>
                 {user ? (
                     <><div className="flex items-center gap-2">
                         <span className="text-sm text-blue-600 text-[20px] mr-2">{user.first_name}</span>
@@ -63,16 +66,27 @@ export default function HeaderNav() {
                             // className="text-red-500"
                             // type="text"
                             onClick={logout}
-                            // style={{ fontSize: "14px", height: "100%" }}
+                        // style={{ fontSize: "14px", height: "100%" }}
                         >
                             Logout
                         </Button>
-                        </div>
+                    </div>
                     </>
-                ) : <Button href="/login" className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<SolutionOutlined />}>Tài Khoản</Button>}
-                <Button href="/cart" type="text" style={{ fontSize: '20px', width: '40px', height: '100%', color: '#3AC5C9' }} icon={<ShoppingCartOutlined />} >
-                </Button>
-                <span className="text-xs bg-red-600 relative rounded w-full text-white  bottom-3 right-4 text-center" style={{ width: '15px', borderRadius: '50px' }}  >1</span>
+                ) : <Button onClick={() => router.push("/login")} className="font-normal  leading-5 btn-home	" style={{ fontSize: '18px', height: '100%', color: 'rgb(128, 128, 137)' }} type="text" icon={<SolutionOutlined />}>Tài Khoản</Button>}
+                <Button onClick={() => router.push("/cart")} type="text" style={{ fontSize: '20px', width: '40px', height: '100%', color: '#3AC5C9' }} icon={<ShoppingCartOutlined />} ></Button>
+                {totalQuantity > 0 && (
+                    <span
+                        className="text-xs bg-red-600 relative rounded w-full text-white  bottom-3 right-4 text-center"
+                        style={{
+                            width: '15px', borderRadius: '50px', 
+                            height: '16px',
+                            fontSize: '10px',
+                            top: '-4px',
+                            lineHeight: '16px',
+                        }}  >
+                        {totalQuantity}
+                    </span>
+                )}
             </div>
 
         </div>
