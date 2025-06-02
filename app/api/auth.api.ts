@@ -9,6 +9,7 @@ type UserType = {
     username: string;
     phone: string;
     email: string;
+    address: string;
 }
 
 const login = async (username: string, password: string) => {

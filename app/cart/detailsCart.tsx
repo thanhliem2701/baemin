@@ -4,18 +4,7 @@ import { Butterfly_Kids } from "next/font/google";
 import Image from "next/image";
 import React from "react";
 import { useSession } from "../context/sessionContext";
-
-// Define CartItem type if not imported from elsewhere
-type CartItem = {
-    id: number;
-    namefood: string;
-    img: string;
-    description: string;
-    price: number;
-    quantity: number;
-    totalprice: number;
-    // Add other properties if needed
-};
+import type { CartItem } from "../context/sessionContext";
 
 export default function DetailsCart({ Details }: { Details: CartItem[] }) {
     const { setCart } = useSession();
@@ -54,7 +43,7 @@ export default function DetailsCart({ Details }: { Details: CartItem[] }) {
                                 </div>
                             </div>
                             <div className="col-span-2 flex items-center justify-center flex-row gap-3">
-                                ₫{items.price}
+                                {Number(items.price).toLocaleString('en-US')} ₫
                             </div>
                             <div className="col-span-2 flex items-center justify-center flex-row gap-3">
                                 <input type="number" id="quantity" className="w-16 text-center border border-gray-300 rounded" 
@@ -64,7 +53,7 @@ export default function DetailsCart({ Details }: { Details: CartItem[] }) {
 
                             </div>
                             <div className="col-span-2 flex items-center justify-center flex-row gap-3">
-                                ₫{items.totalprice}
+                                {Number(items.totalprice).toLocaleString('en-US')} ₫
                             </div>
                             <div className="col-span-2 flex items-center justify-center flex-row gap-3">
                                 <span onClick={() => handleRemove(items.id)} className=" hover:text-red-600 cursor-pointer">Xóa</span>

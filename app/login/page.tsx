@@ -18,8 +18,7 @@ const Page: React.FC = () => {
 
     const handleLogin = async () => {
         if (!email || !password) {
-            //alert('Vui lòng nhập đầy đủ thông tin đăng nhập');
-            alert(password);
+            alert("please input username and password!");
             return;
         }
 
@@ -38,7 +37,6 @@ const Page: React.FC = () => {
             localStorage.setItem('user',JSON.stringify(user))
             setToken(token)
             session?.setUser && session.setUser(user)
-
             message.success('Đăng nhập thành công!');
             router.push('/dashboard');
 

@@ -8,6 +8,7 @@ type UserType = {
     username: string;
     phone: string;
     email: string;
+    address: string;
 }
 
 export type CartItem = {
@@ -39,27 +40,37 @@ export const SessionContext = createContext<SessionContextType | undefined>(unde
 export const SessionProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserType | null>(null);
     const [cart, setCart] = useState<CartItem[]>([]);
-    // Load user từ localStorage khi reload trang
+    const [isInitialized, setIsInitialized] = useState(false);
+    // Load user from localStorage when reload page
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const storedCart = localStorage.getItem('cart');
-        if (storedUser) setUser(JSON.parse(storedUser));
-        if (storedCart) setCart(JSON.parse(storedCart));
+        if (typeof window !== 'undefined') {
+            const storedUser = localStorage.getItem('user');
+            const storedCart = localStorage.getItem('cart');
+            if (storedUser) setUser(JSON.parse(storedUser));
+            if (storedCart) setCart(JSON.parse(storedCart));
+            setIsInitialized(true)
+        }
+
     }, []);
 
-    // Cập nhật localStorage mỗi khi user thay đổi
+    // Update localStorage realtime
     useEffect(() => {
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-        } else {
-            localStorage.removeItem('user');
+        if (!isInitialized) return;
+        if (typeof window !== 'undefined') {
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+            } else {
+                localStorage.removeItem('user');
+            }
+            if (cart) {
+                localStorage.setItem('cart', JSON.stringify(cart));
+            } else {
+                localStorage.removeItem('cart');
+            }
         }
-    }, [user]);
-
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
+        console.log("user loaded from localStorage:", user);
         console.log("Cart loaded from localStorage:", cart);
-    }, [cart]);
+    }, [user, cart,isInitialized]);
 
     // Cart logic
     const addToCart = (item: CartItem) => {
@@ -67,7 +78,8 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
             const existing = prev.find((p) => p.id === item.id);
             if (existing) {
                 return prev.map((p) =>
-                    p.id === item.id ? { ...p, 
+                    p.id === item.id ? {
+                        ...p,
                         quantity: p.quantity + item.quantity,
                         totalprice: (p.quantity + item.quantity) * p.price
                     } : p
@@ -95,11 +107,9 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 //export const useSession = () => useContext(SessionContext);
 
 export const useSession = () => {
-  const context = useContext(SessionContext);
-  if (!context) {
-    throw new Error("useSession must be used within a SessionProvider");
-  }
-  return context;
+    const context = useContext(SessionContext);
+    if (!context) {
+        throw new Error("useSession must be used within a SessionProvider");
+    }
+    return context;
 };
-
-
