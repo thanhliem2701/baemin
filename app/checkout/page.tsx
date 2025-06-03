@@ -8,6 +8,10 @@ import { useSession } from "../context/sessionContext";
 import React, { useEffect, useState } from "react";
 import { Modal, Button } from "antd";
 import { sendMail } from "../api/sendMail.api";
+import { CreateOrderDto } from "../api/type/order";
+import { createOrder } from "../api/order.api";
+import Commet from "react-loading-indicators/Commet";
+
 export default function Home() {
     const { cart, clearCart, user } = useSession();
     const router = useRouter();
@@ -18,9 +22,11 @@ export default function Home() {
     const totalPrice = cart.reduce((sum, item) => sum + item.totalprice, 0);
     const shippingFee = 15000;
     const finalTotal = totalPrice + shippingFee - selectedVoucher;
+    const [loading, setLoading] = useState(false);
 
+    const handleNavigate = async () => {
 
-    const handleNavigate = () => {
+        //create data to send mail
         const orderSummary = {
             shippingFee,
             finalTotal,
@@ -28,17 +34,65 @@ export default function Home() {
             voucherText,
             totalQuantity,
             totalPrice,
-            userFullName: user.first_name && ' ' && user.last_name,
+            userFullName: [user.first_name, user.last_name].filter(Boolean).join(' '),
             userEmail: user.email,
         };
+
         localStorage.setItem('orderSummary', JSON.stringify(orderSummary));
+        setLoading(true);
 
-        //call api send email
-        sendMail(orderSummary)
+        //send confirm email
+        await sendMail(orderSummary)
 
-        router.push('/statusorder');
+        // Create data for order
+        const orderDetails = cart.map((item) => ({
+            food_id: item.id,
+            name: item.namefood,
+            quantity: item.quantity,
+            amount: item.totalprice,
+        }));
+        //call api order
+        const orderData: CreateOrderDto = {
+            user_id: user.id,
+            user_name: [user.first_name, user.last_name].filter(Boolean).join(' '),
+            user_phone: user.phone,
+            delivery_address: user.address,
+            total_price: orderSummary.finalTotal,
+            discount_code: orderSummary.voucherText,
+            discount_amount: orderSummary.selectedVoucher,
+            orderDetails,
+        };
+        try {
+            const result = await createOrder(orderData);
+        } catch (err) {
+            console.log(err)
+            alert('Lỗi khi đặt hàng.');
+            return;
+        } finally {
+            setLoading(false);
+        }
 
+        Modal.info({
+            title: 'Xác nhận đơn hàng',
+            content: 'Đơn đặt hàng đã được xác nhận, vui lòng kiểm tra email để theo dõi tiến trình giao hàng !',
+            onOk() {
+                clearCart();
+                router.push('/statusorder');
+            },
+            okText: 'Xác nhận'
+        })
     };
+    if (loading) return (
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+        }}>
+            <Commet color="#32cd32" size="medium" />
+        </div>
+    );
+
     return (
         <>
             <div className="flex flex-row w-full h-20 bg-white ">

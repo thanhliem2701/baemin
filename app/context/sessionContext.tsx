@@ -68,8 +68,6 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
                 localStorage.removeItem('cart');
             }
         }
-        console.log("user loaded from localStorage:", user);
-        console.log("Cart loaded from localStorage:", cart);
     }, [user, cart,isInitialized]);
 
     // Cart logic

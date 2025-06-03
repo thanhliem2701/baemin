@@ -14,12 +14,17 @@ type OrderSummary = {
     userEmail: string;
 }
 
-const sendMail = async (orderSummary: OrderSummary ) => {
+const sendMail = async (orderSummary: OrderSummary) => {
     try {
-        const response = await axios.post(`${BASE_URL}`, orderSummary)
+        const response = await axios.post(`${BASE_URL}`, {
+            to: orderSummary.userEmail,
+            subject: 'Order Confirmation',
+            orderSummary
+        })
         return response.data
     }
     catch (error) {
+        console.log(error)
         return { error }
     }
 }

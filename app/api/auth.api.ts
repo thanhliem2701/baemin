@@ -16,7 +16,7 @@ const login = async (username: string, password: string) => {
     try {
         const response = await axios.post(`${BASE_URL}/login`, {
             username,
-            password
+            password,
         })
         return response.data
     }
